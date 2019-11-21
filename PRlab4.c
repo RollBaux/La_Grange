@@ -76,7 +76,9 @@ int main()
   G_rgb (0.0, 0.0, 1.0) ; // blue
   lowleftx = 800; lowlefty = 0 ; width = 30 ; height = 799 ;
   G_fill_rectangle (lowleftx, lowlefty, width, height) ;
-
+  
+  // Get all the points the user wants, terminate when they click above 
+  // 800 (blue bar)
   G_rgb(1,1,0) ;
   for(int i = 0; i < 100; ++i){
     G_wait_click(p);
@@ -85,28 +87,27 @@ int main()
     x[i] = p[0] ; y[i] = p[1];
     G_fill_circle(x[i],y[i],2);
     ++num_of_points;
-    //printf("(%lf, %lf)    || Number of points: %i\n", x[i], y[i], num_of_points);
   }
-  
+ 
+  // LaGrange mathy stuff
   double top_product, bottom_product;
   G_rgb(1,0,0) ;
   for (X = 0; X < 800; ++X){
     Y = 0.0;
     for (int i = 0; i < num_of_points; ++i){
+      // set = to 1, so we don't divide by 0
       top_product = 1.0;
       bottom_product = 1.0;
       for (int j = 0; j < num_of_points; ++j){
+        // skip so we don't get a 0 in the denominator
         if (j == i){
           continue;
         }
         top_product *= (X - x[j]);
-        if (x[i]-x[j] != 0){
-          bottom_product *= (x[i] - x[j]); 
-        }
+        bottom_product *= (x[i] - x[j]); 
       }
       Y += y[i] * (top_product/bottom_product);
     }
-    //printf("(%lf, %lf)\n", X, Y);
     G_point(X,Y);
   }
 
